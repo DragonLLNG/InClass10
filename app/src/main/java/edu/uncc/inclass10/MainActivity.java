@@ -30,12 +30,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                 .commit();
     }
 
-    @Override
-    public void goToPostFragment() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.containerView, new PostsFragment(), "postFragment")
-                .commit();
-    }
 
 
     @Override
@@ -46,20 +40,19 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     }
 
 
-    @Override
-    public void logout() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.containerView, new LoginFragment())
-                .commit();
-
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void createPost() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerView, new CreatePostFragment())
                 .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void goToPostFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerView, new PostsFragment(), "postFragment")
                 .commit();
     }
 
