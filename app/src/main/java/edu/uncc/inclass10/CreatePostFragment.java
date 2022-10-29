@@ -1,10 +1,12 @@
 package edu.uncc.inclass10;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -15,64 +17,43 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import edu.uncc.inclass10.databinding.FragmentCreatePostBinding;
+import edu.uncc.inclass10.models.Post;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CreatePostFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class CreatePostFragment extends Fragment {
     private final String TAG="demo";
+    FragmentCreatePostBinding binding;
+    LocalDateTime date;
+    String pattern = "MM/dd/yyyy HH:mma";
+    DateTimeFormatter dateTime = DateTimeFormatter.ofPattern(pattern);
+    Post post;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public CreatePostFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreatePostFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CreatePostFragment newInstance(String param1, String param2) {
-        CreatePostFragment fragment = new CreatePostFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
-    FragmentCreatePostBinding binding;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,45 +81,40 @@ public class CreatePostFragment extends Fragment {
                     Toast.makeText(getActivity(), "Enter valid post !!", Toast.LENGTH_SHORT).show();
                 } else {
 
+                    post = new Post();
+                    post.setPost_text(postText);
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    if(user != null) {
+                        post.setCreated_by_name(user.getDisplayName());
+                    } else {
+                        Log.d(TAG, "onClick: Error: No User Logged In");
+                    }
+
+                    date = LocalDateTime.now();
+                    post.setCreated_at(dateTime.format(date));
 
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                    HashMap<String, Object> user = new HashMap<>();
-                    user.put("post_text", postText);
-
                     db.collection("posts")
-                            .add(user)
+                            .add(post)
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
+                                    post.setPost_id(documentReference.getId());
+
+                                    HashMap<String, Object> postId = new HashMap<>();
+                                    postId.put("post_id", post.post_id);
+
+                                    db.collection("posts")
+                                            .document(post.post_id)
+                                            .update(postId);
+
+                                    mListener.updatePosts(post);
 
                                 }
                             });
-//                    db.collection("posts")
-//                            .document()
-
-
-
-//                    db.collection("posts").get()
-//                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                                @Override
-//                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                                    Log.d(TAG, "onSuccess: ");
-//                                    for (QueryDocumentSnapshot document: queryDocumentSnapshots){
-//                                        Log.d(TAG, "onComplete " + document.getId());
-//                                        Log.d(TAG, "onComplete " + document.getData());
-//                                    }
-//                                }
-//                            })
-//                            .addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                    Log.d(TAG, "onFailure: ");
-//                                }
-//                            });
-
-
-
+//
                 }
             }
         });
@@ -156,5 +132,6 @@ public class CreatePostFragment extends Fragment {
 
     interface CreatePostListener {
         void goBackToPosts();
+        void updatePosts(Post post);
     }
 }

@@ -17,10 +17,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import edu.uncc.inclass10.databinding.FragmentLoginBinding;
-import edu.uncc.inclass10.models.AuthResponse;
 
 public class LoginFragment extends Fragment {
     private final String TAG = "demo";
@@ -67,11 +65,11 @@ public class LoginFragment extends Fragment {
                                     if(task.isSuccessful()){
                                         Log.d(TAG, "onComplete: Login Successful");
                                         Log.d(TAG, "onComplete: "+mAuth.getCurrentUser().getUid());
-
-
+                                        Log.d(TAG, "onComplete: "+mAuth.getCurrentUser().getDisplayName());
+                                        mListener.goToPostFragment();
                                     }
                                     else{
-                                        Log.d(TAG, "onComplete: Fail"+task.getException().getMessage());
+                                        Toast.makeText(getActivity(), "Log in fail"+task.getException().getMessage(),  Toast.LENGTH_SHORT).show();;
                                     }
                                 }
                             });
@@ -100,6 +98,6 @@ public class LoginFragment extends Fragment {
 
     interface LoginListener {
         void createNewAccount();
-        void authCompleted(AuthResponse authResponse);
+        void goToPostFragment();
     }
 }
