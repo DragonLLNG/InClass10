@@ -84,9 +84,10 @@ public class PostsFragment extends Fragment {
             }
         });
 
-        //binding.textViewTitle.setText("Welcome "+ user.getDisplayName().toString());
+        //binding.textViewTitle.setText("Welcome "+ user.getDisplayName());
 
 
+        //Log.d(TAG, "onViewCreated: "+postsAdapter.toString());
 
         binding.recyclerViewPosts.setLayoutManager(new LinearLayoutManager(getContext()));
         postsAdapter = new PostsAdapter();
@@ -95,6 +96,8 @@ public class PostsFragment extends Fragment {
         getActivity().setTitle(R.string.posts_label);
 
         getPosts();
+
+
     }
 
     void getPosts(){
@@ -151,7 +154,6 @@ public class PostsFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull PostsViewHolder holder, int position) {
             Post post = mPosts.get(position);
-
             holder.mPost = post;
             holder.setupUI(post);
         }
@@ -171,17 +173,16 @@ public class PostsFragment extends Fragment {
 
             public void setupUI(Post post){
                 mPost = post;
-
                 mBinding.textViewPost.setText(post.getPost_text());
                 mBinding.textViewCreatedBy.setText(post.getCreated_by_name());
                 mBinding.textViewCreatedAt.setText(post.getCreated_at());
 
                 Log.d(TAG, "setupUI2: "+ post.created_by_name);
-                Log.d(TAG, "setupUI: "+FirebaseAuth.getInstance().getCurrentUser().getDisplayName().toString());
+                //Log.d(TAG, "setupUI: "+FirebaseAuth.getInstance().getCurrentUser().getDisplayName().toString());
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                if(post.created_by_name.toString().equals(user.getDisplayName().toString())) {
+                if(user != null && post.created_by_name.toString().equals(user.getDisplayName().toString())) {
                     mBinding.imageViewDelete.setVisibility(View.VISIBLE);
                 } else {
                     mBinding.imageViewDelete.setVisibility(View.INVISIBLE);

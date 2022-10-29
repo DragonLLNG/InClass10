@@ -97,7 +97,7 @@ public class SignUpFragment extends Fragment {
 
                                     }
                                     else{
-                                        Log.d(TAG, "onComplete: Fail"+task.getException().getMessage());
+                                        Toast.makeText(getActivity(), "Fail"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
