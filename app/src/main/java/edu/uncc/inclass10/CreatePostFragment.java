@@ -1,12 +1,14 @@
 package edu.uncc.inclass10;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -77,8 +79,18 @@ public class CreatePostFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String postText = binding.editTextPostText.getText().toString();
+
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
                 if(postText.isEmpty()){
-                    Toast.makeText(getActivity(), "Enter valid post !!", Toast.LENGTH_SHORT).show();
+                    alertBuilder.setTitle(R.string.error)
+                            .setMessage(R.string.toast_desc)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d(TAG, "onClick: ");
+                                }
+                            });
+                    alertBuilder.create().show();
                 } else {
 
                     post = new Post();

@@ -1,10 +1,12 @@
 package edu.uncc.inclass10;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -52,10 +54,27 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 String email = binding.editTextEmail.getText().toString();
                 String password = binding.editTextPassword.getText().toString();
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
                 if(email.isEmpty()){
-                    Toast.makeText(getActivity(), "Enter valid email!", Toast.LENGTH_SHORT).show();
+                    alertBuilder.setTitle(R.string.error)
+                            .setMessage(R.string.toast_email)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d(TAG, "onClick: ");
+                                }
+                            });
+                    alertBuilder.create().show();
                 } else if (password.isEmpty()){
-                    Toast.makeText(getActivity(), "Enter valid password!", Toast.LENGTH_SHORT).show();
+                    alertBuilder.setTitle(R.string.error)
+                            .setMessage(R.string.toast_password)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d(TAG, "onClick: ");
+                                }
+                            });
+                    alertBuilder.create().show();
                 } else {
                     mAuth = FirebaseAuth.getInstance();
                     mAuth.signInWithEmailAndPassword(email,password)
@@ -69,7 +88,15 @@ public class LoginFragment extends Fragment {
                                         mListener.goToPostFragment();
                                     }
                                     else{
-                                        Toast.makeText(getActivity(), "Log in fail"+task.getException().getMessage(),  Toast.LENGTH_SHORT).show();;
+                                        alertBuilder.setTitle(R.string.error)
+                                                .setMessage(task.getException().getMessage())
+                                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        Log.d(TAG, "onClick: ");
+                                                    }
+                                                });
+                                        alertBuilder.create().show();
                                     }
                                 }
                             });

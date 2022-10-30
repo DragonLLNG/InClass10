@@ -1,10 +1,12 @@
 package edu.uncc.inclass10;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -61,12 +63,38 @@ public class SignUpFragment extends Fragment {
                 String email = binding.editTextEmail.getText().toString();
                 String password = binding.editTextPassword.getText().toString();
 
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+
                 if(name.isEmpty()){
-                    Toast.makeText(getActivity(), "Enter valid name!", Toast.LENGTH_SHORT).show();
+                    alertBuilder.setTitle(R.string.error)
+                            .setMessage(R.string.toast_name)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d(TAG, "onClick: ");
+                                }
+                            });
+                    alertBuilder.create().show();
                 } else if(email.isEmpty()){
-                    Toast.makeText(getActivity(), "Enter valid email!", Toast.LENGTH_SHORT).show();
+                    alertBuilder.setTitle(R.string.error)
+                            .setMessage(R.string.toast_email)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d(TAG, "onClick: ");
+                                }
+                            });
+                    alertBuilder.create().show();
                 } else if (password.isEmpty()){
-                    Toast.makeText(getActivity(), "Enter valid password!", Toast.LENGTH_SHORT).show();
+                    alertBuilder.setTitle(R.string.error)
+                            .setMessage(R.string.toast_password)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d(TAG, "onClick: ");
+                                }
+                            });
+                    alertBuilder.create().show();
                 } else {
                     mAuth = FirebaseAuth.getInstance();
                     mAuth.createUserWithEmailAndPassword(email,password)

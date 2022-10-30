@@ -15,4 +15,10 @@
     <string name="posts_label">Posts</string>
     <string name="create_account_label">Create New Account</string>
     <string name="prefs_file" translatable="false">prefs_file</string>
+    <string name="error">Error</string>
+    <string name="toast_email">Enter your email.</string>
+    <string name="ok">OK</string>
+    <string name="toast_password">Enter your password.</string>
+    <string name="toast_name">Enter your name.</string>
+    <string name="toast_desc">Enter a post.</string>
 </resources>
