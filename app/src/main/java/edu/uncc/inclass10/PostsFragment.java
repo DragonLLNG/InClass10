@@ -84,10 +84,9 @@ public class PostsFragment extends Fragment {
             }
         });
 
-        //binding.textViewTitle.setText("Welcome "+ user.getDisplayName());
+        binding.textViewTitle.setText("Welcome "+ user.getDisplayName());
 
 
-        //Log.d(TAG, "onViewCreated: "+postsAdapter.toString());
 
         binding.recyclerViewPosts.setLayoutManager(new LinearLayoutManager(getContext()));
         postsAdapter = new PostsAdapter();
@@ -182,7 +181,7 @@ public class PostsFragment extends Fragment {
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                if(user != null && post.created_by_name.toString().equals(user.getDisplayName().toString())) {
+                if(user != null && post.created_by_name.equals(user.getDisplayName())) {
                     mBinding.imageViewDelete.setVisibility(View.VISIBLE);
                 } else {
                     mBinding.imageViewDelete.setVisibility(View.INVISIBLE);
